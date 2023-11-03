@@ -31,3 +31,7 @@ class AudioEncoder {
         const val wav = "wav"
     }
 }
+
+class AudioInputDevice(val id: String, val label: String) {
+}
+

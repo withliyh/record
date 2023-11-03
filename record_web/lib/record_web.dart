@@ -113,4 +113,16 @@ class RecordPluginWebWrapper extends RecordPlatform {
 
     return recorder;
   }
+
+  @override
+  Future<int> activeOutputDevice(String recorderId, String outputDeviceId) {
+    // TODO: implement activeOutputDevice
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<OutputDevice>> listOutputDevices(String recorderId) {
+    // TODO: implement listOutputDevices
+    throw UnimplementedError();
+  }
 }

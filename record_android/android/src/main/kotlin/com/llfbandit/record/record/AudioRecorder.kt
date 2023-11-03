@@ -26,6 +26,7 @@ internal interface OnAudioRecordListener {
     fun onAudioChunk(chunk: ByteArray)
 }
 
+
 class AudioRecorder(
     // Recording config
     private val config: RecordConfig,
@@ -102,6 +103,10 @@ class AudioRecorder(
         amps.add(amplitude)
         amps.add(maxAmplitude)
         return amps
+    }
+
+    fun listDevices() : List<AudioInputDevice>? {
+        return recorderThread?.listDevices();
     }
 
     fun dispose() {
@@ -214,6 +219,9 @@ class AudioRecorder(
 
         fun getAmplitude(): Double = reader?.getAmplitude() ?: -160.0
 
+        fun listDevices(): List<AudioInputDevice>? {
+            return reader?.listDevices()
+        }
         override fun run() {
             try {
                 val format = selectFormat()

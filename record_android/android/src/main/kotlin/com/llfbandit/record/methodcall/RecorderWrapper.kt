@@ -81,6 +81,11 @@ internal class RecorderWrapper(recorderId: String, messenger: BinaryMessenger) {
         }
     }
 
+    fun listDevices(result: MethodChannel.Result) {
+        val devices = recorder?.listDevices()
+        result.success(devices)
+    }
+
     fun resume(result: MethodChannel.Result) {
         try {
             recorder?.resume()

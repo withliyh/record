@@ -5,6 +5,17 @@
 
 namespace record_windows
 {
+	HRESULT Recorder::EnumAudioProfile() {
+		IMFMediaType* meditType = NULL;
+		HRESULT result = S_OK;
+		DWORD dwStreamIndex = 0;
+		while (result == S_OK) {
+			m_pReader->GetCurrentMediaType(dwStreamIndex, &meditType);
+		}
+		return S_OK;
+		
+	}
+
 	HRESULT Recorder::CreateAudioProfileIn(IMFMediaType** ppMediaType)
 	{
 		HRESULT hr = S_OK;
@@ -35,7 +46,11 @@ namespace record_windows
 		}
 		if (SUCCEEDED(hr))
 		{
-			hr = pMediaType->SetUINT32(MF_MT_AVG_BITRATE, m_pConfig->bitRate);
+			//hr = pMediaType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
+		}
+		if (SUCCEEDED(hr))
+		{
+			// hr = pMediaType->SetUINT32(MF_MT_AVG_BITRATE, 384000);
 		}
 		if (SUCCEEDED(hr))
 		{

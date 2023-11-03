@@ -83,7 +83,9 @@ class MethodCallHandlerImpl(
             "cancel" -> recorder.cancel(result)
             "hasPermission" -> permissionManager.hasPermission(result::success)
             "getAmplitude" -> recorder.getAmplitude(result)
-            "listInputDevices" -> result.success(null)
+            "listInputDevices" -> {
+                recorder.listDevices(result)
+            }
             "dispose" -> {
                 recorder.dispose()
                 recorders.remove(recorderId)

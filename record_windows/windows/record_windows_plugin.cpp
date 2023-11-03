@@ -3,7 +3,7 @@
 #include <Mferror.h>
 #include "record_config.h"
 #include <flutter/event_stream_handler_functions.h>
-
+#include "player.h"
 using namespace flutter;
 
 namespace record_windows {
@@ -218,6 +218,27 @@ namespace record_windows {
 		else if (method_call.method_name().compare("listInputDevices") == 0)
 		{
 			ListInputDevices(*result);
+		}
+		else if (method_call.method_name().compare("listOutputDevices") == 0)
+		{
+	
+			std::vector<record_windows::PlayDevice> playDevices;
+			Player::ListOutputDevices(playDevices);
+			EncodableList devices;
+			for (int i =0; i<playDevices.size(); i++) {
+				auto id = playDevices[i].id;
+				auto friendlyName = playDevices[i].label;
+				devices.push_back(EncodableMap({
+					{EncodableValue("id"), EncodableValue(id)},
+					{EncodableValue("label"), EncodableValue(friendlyName)}
+				}));
+			}
+			result->Success(std::move(EncodableValue(devices)));
+		}
+		else if (method_call.method_name().compare("activeOutputDevice") == 0) {
+			std::string outputDeviceId;
+			GetValueFromEncodableMap(mapArgs, "outputDeviceId", outputDeviceId);
+			recorder->activeOutput(outputDeviceId);
 		}
 	}
 

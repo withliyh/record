@@ -24,6 +24,7 @@
 */
 
 #include "record.h"
+#include "player.h"
 
 namespace record_windows
 {
@@ -60,6 +61,10 @@ namespace record_windows
 
 	Recorder::~Recorder()
 	{
+		if (m_pPlayer != nullptr) {
+			delete m_pPlayer;
+			m_pPlayer = nullptr;
+		}
 		Dispose();
 	}
 
@@ -97,6 +102,7 @@ namespace record_windows
 			EndRecording();
 		}
 
+
 		return hr;
 	}
 
@@ -108,6 +114,7 @@ namespace record_windows
 		}
 
 		HRESULT hr = InitRecording(std::move(config));
+	
 
 		if (SUCCEEDED(hr))
 		{
@@ -125,6 +132,7 @@ namespace record_windows
 		{
 			EndRecording();
 		}
+		
 
 		return hr;
 	}
@@ -310,6 +318,25 @@ namespace record_windows
 		}
 	}
 
+	int Recorder::activeOutput(std::string deviceId) {
+		if (m_pPlayer == nullptr) {
+			m_pPlayer = new Player();
+		}
+		if (deviceId != "") {
+			m_pPlayer->Ready(deviceId);
+			m_pReader->SetCurrentMediaType(0, NULL, m_pPlayer->GetMediaType());
+			IMFMediaType *readerMediaType = nullptr;
+			HRESULT hr = m_pReader->GetCurrentMediaType(0, &readerMediaType);
+			if (SUCCEEDED(hr)) {
+				std::cout << "Reader Device MediaType: " << Player::GetMediaTypeDescript(readerMediaType) << std::endl;
+				SafeRelease(readerMediaType);
+			}
+			std::cout << "Select Output Device: " << deviceId << std::endl;
+			std::cout << "Desc:" << Player::GetMediaTypeDescript(m_pPlayer->GetMediaType()) << std::endl;
+		}
+		return 0;
+	}
+
 	HRESULT Recorder::CreateAudioCaptureDevice(LPCWSTR deviceId)
 	{
 		IMFAttributes* pAttributes = NULL;
@@ -364,6 +391,26 @@ namespace record_windows
 		{
 			hr = MFCreateSourceReaderFromMediaSource(m_pSource, pAttributes, &m_pReader);
 		}
+
+		
+		DWORD nativeTypeIndex = 0;
+		while (true)
+		{
+			IMFMediaType *pNativeType = NULL;
+			hr = m_pReader->GetNativeMediaType(0, nativeTypeIndex, &pNativeType);
+			if (!SUCCEEDED(hr)) {
+				hr = S_OK;
+				break;
+			}
+			auto desc = Player::GetMediaTypeDescript(pNativeType);
+			std::cout << "Record Native Media Type <<" <<  nativeTypeIndex << " : " << desc <<std::endl;
+
+
+			nativeTypeIndex++;
+			SafeRelease(pNativeType);
+		}
+		
+
 		if (SUCCEEDED(hr))
 		{
 			hr = CreateAudioProfileIn(&pMediaTypeIn);
@@ -375,6 +422,8 @@ namespace record_windows
 
 		SafeRelease(&pMediaTypeIn);
 		SafeRelease(&pAttributes);
+
+		
 		return hr;
 	}
 

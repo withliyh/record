@@ -6,7 +6,8 @@
 #include <mferror.h>
 #include <shlwapi.h>
 #include <Mfreadwrite.h>
-
+#include <mmdeviceapi.h>
+#include <Functiondiscoverykeys_devpkey.h>
 #include <assert.h>
 
 // utility functions
@@ -15,6 +16,7 @@
 #include "record_config.h"
 
 #include "event_stream_handler.h"
+//#include "player.h"
 
 using namespace flutter;
 
@@ -24,6 +26,8 @@ namespace record_windows
 		pause, record, stop
 	};
 
+	
+	class Player;
 	class Recorder : public IMFSourceReaderCallback
 	{
 	public:
@@ -43,6 +47,8 @@ namespace record_windows
 		std::map<std::string, double> GetAmplitude();
 		std::string GetRecordingPath();
 		HRESULT isEncoderSupported(std::string encoderName, bool* supported);
+
+		int activeOutput(std::string deviceId);
 		
 		// IUnknown methods
 		STDMETHODIMP QueryInterface(REFIID iid, void** ppv);
@@ -58,6 +64,7 @@ namespace record_windows
 		HRESULT CreateAudioCaptureDevice(LPCWSTR pszEndPointID);
 		HRESULT CreateSourceReaderAsync();
 		HRESULT CreateSinkWriter(std::string path);
+		HRESULT EnumAudioProfile();
 		HRESULT CreateAudioProfileIn( IMFMediaType** ppMediaType);
 		HRESULT CreateAudioProfileOut( IMFMediaType** ppMediaType);
 
@@ -97,5 +104,7 @@ namespace record_windows
 
 		RecordState m_recordState = RecordState::stop;
 		std::unique_ptr<RecordConfig> m_pConfig;
+
+		Player* m_pPlayer = nullptr;
 	};
 };

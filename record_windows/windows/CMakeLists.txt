@@ -2,7 +2,7 @@
 # installed that includes CMake 3.14 or later. You should not increase this
 # version, as doing so will cause the plugin to fail to compile for some
 # customers of the plugin.
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.14)
 
 # Project-level configuration.
 set(PROJECT_NAME "record_windows")
@@ -22,8 +22,11 @@ list(APPEND PLUGIN_SOURCES
   "record_readercallback.cpp"
   "record_iunknown.cpp"
   "record_mediatype.cpp"
+  "player.cpp"
+  "player.h"
   "utils.h"
   "event_stream_handler.h"
+  "MFUtility.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

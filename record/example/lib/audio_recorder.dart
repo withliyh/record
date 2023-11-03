@@ -44,7 +44,7 @@ class _RecorderState extends State<Recorder> with AudioRecorderMixin {
   Future<void> _start() async {
     try {
       if (await _audioRecorder.hasPermission()) {
-        const encoder = AudioEncoder.wav;
+        const encoder = AudioEncoder.pcm16bits;
 
         // We don't do anything with this but printing
         final isSupported = await _audioRecorder.isEncoderSupported(
@@ -56,13 +56,13 @@ class _RecorderState extends State<Recorder> with AudioRecorderMixin {
         final devs = await _audioRecorder.listInputDevices();
         debugPrint(devs.toString());
 
-        const config = RecordConfig(encoder: encoder);
+        const config = RecordConfig(encoder: encoder, numChannels: 1);
 
         // Record to file
-        await recordFile(_audioRecorder, config);
+        // await recordFile(_audioRecorder, config);
 
         // Record to stream
-        // await recordStream(_audioRecorder, config);
+        await recordStream(_audioRecorder, config);
 
         _recordDuration = 0;
 
@@ -116,6 +116,10 @@ class _RecorderState extends State<Recorder> with AudioRecorderMixin {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                TextButton(onPressed: () async {
+                  final devs = await _audioRecorder.listInputDevices();
+                  debugPrint(devs.toString());
+                }, child: Text("ListDevices")),
                 _buildRecordStopControl(),
                 const SizedBox(width: 20),
                 _buildPauseResumeControl(),

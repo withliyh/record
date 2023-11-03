@@ -155,6 +155,29 @@ class RecordMethodChannel extends RecordPlatform {
   }
 
   @override
+  Future<List<OutputDevice>> listOutputDevices(String recorderId) async {
+    final devices = await _methodChannel.invokeMethod<List<dynamic>>(
+      'listOutputDevices',
+      {'recorderId': recorderId},
+    );
+
+    return devices
+            ?.map((d) => OutputDevice.fromMap(d as Map))
+            .toList(growable: false) ??
+        [];
+  }
+
+  @override
+  Future<int> activeOutputDevice(
+      String recorderId, String outputDeviceId) async {
+    final resultCode = await _methodChannel.invokeMethod<int>(
+      'activeOutputDevice',
+      {'recorderId': recorderId, 'outputDeviceId': outputDeviceId},
+    );
+    return resultCode ?? -1;
+  }
+
+  @override
   Stream<RecordState> onStateChanged(String recorderId) {
     final eventChannel = EventChannel(
       'com.llfbandit.record/events/$recorderId',

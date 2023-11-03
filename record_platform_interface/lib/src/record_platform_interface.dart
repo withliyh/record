@@ -99,6 +99,9 @@ abstract class RecordPlatform extends PlatformInterface {
   /// On web, and in general, you should already have permission before
   /// accessing this method otherwise the list may return an empty list.
   Future<List<InputDevice>> listInputDevices(String recorderId);
+  Future<List<OutputDevice>> listOutputDevices(String recorderId);
+
+  Future<int> activeOutputDevice(String recorderId, String outputDeviceId);
 
   /// Listen to recorder states [RecordState].
   ///

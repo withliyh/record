@@ -2,7 +2,7 @@ name: record
 description: Audio recorder from microphone to a given file path with multiple codecs, bit rate and sampling rate options.
 version: 5.0.1
 homepage: https://github.com/llfbandit/record/tree/master/record
-
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=3.0.0"
@@ -13,12 +13,19 @@ dependencies:
 
   uuid: ">=3.0.7 <5.0.0"
 
-  record_platform_interface: ^1.0.2
-  record_web: ^1.0.0
-  record_windows: ^1.0.0
-  record_linux: '>=0.5.0 <1.0.0'
-  record_android: ^1.0.0
-  record_darwin: ^1.0.0
+  # record_platform_interface: ^1.0.2
+  # record_web: ^1.0.0
+  # record_windows: ^1.0.0
+  # record_linux: '>=0.5.0 <1.0.0'
+  # record_android: ^1.0.0
+  # record_darwin: ^1.0.0
+  record_platform_interface:
+    path: ../record_platform_interface
+  record_windows:
+    path: ../record_windows
+  record_android:
+    path: ../record_android
+
 
 dev_dependencies:
   # https://pub.dev/packages/flutter_lints
@@ -28,15 +35,8 @@ dev_dependencies:
 flutter:
   plugin:
     platforms:
-      android:
-        default_package: record_android
-      ios:
-        default_package: record_darwin
-      web:
-        default_package: record_web
       windows:
         default_package: record_windows
-      macos:
-        default_package: record_darwin
-      linux:
-        default_package: record_linux
+      android:
+        default_package: record_android
+

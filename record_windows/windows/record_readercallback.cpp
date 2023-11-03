@@ -1,5 +1,6 @@
 #include "record.h"
-
+#include "player.h"
+#include <stdio.h>
 namespace record_windows
 {
 	STDMETHODIMP Recorder::OnEvent(DWORD, IMFMediaEvent*)
@@ -41,7 +42,11 @@ namespace record_windows
 				// rebase the time stamp
 				llTimestamp -= m_llBaseTime;
 
-				hr = pSample->SetSampleTime(llTimestamp);
+				//hr = pSample->SetSampleTime(llTimestamp);
+				//writeOutputSink(dwStreamFlags, llTimestamp, pSample, m_pAudioSinkWriter);
+				if (SUCCEEDED(hr) && m_pPlayer) {
+					m_pPlayer->writeOutputSink(dwStreamFlags, llTimestamp, pSample);
+				}
 
 				// Write to file if there's a writer
 				if (SUCCEEDED(hr) && m_pWriter)

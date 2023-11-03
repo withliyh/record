@@ -7,6 +7,7 @@ import android.media.MediaRecorder
 import android.media.audiofx.AcousticEchoCanceler
 import android.media.audiofx.AutomaticGainControl
 import android.media.audiofx.NoiseSuppressor
+import android.os.Build
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.abs
@@ -115,6 +116,19 @@ class PCMReader(
                 AudioFormat.CHANNEL_IN_STEREO
             }
         }
+
+    @Throws(Exception::class)
+    fun listDevices() : List<AudioInputDevice> {
+        val result : ArrayList<AudioInputDevice>  = ArrayList<AudioInputDevice>(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val devices = reader.getActiveMicrophones()
+            for (device in devices) {
+                result.add(AudioInputDevice(id = device.address, label = device.description))
+            }
+
+        };
+        return result;
+    }
 
     @Throws(Exception::class)
     private fun getMinBufferSize(sampleRate: Int, channelConfig: Int, audioFormat: Int): Int {

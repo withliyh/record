@@ -149,6 +149,17 @@ class AudioRecorder {
     return RecordPlatform.instance.listInputDevices(_recorderId);
   }
 
+  Future<List<OutputDevice>> listOutputDevices() async {
+    await _createCompleter.future;
+    return RecordPlatform.instance.listOutputDevices(_recorderId);
+  }
+
+  Future<int> activeOutputDevice(String outputDeviceId) async {
+    await _createCompleter.future;
+    return RecordPlatform.instance
+        .activeOutputDevice(_recorderId, outputDeviceId);
+  }
+
   /// Gets current average & max amplitudes (dBFS)
   /// Always returns zeros on unsupported platforms
   Future<Amplitude> getAmplitude() async {
@@ -237,7 +248,7 @@ class AudioRecorder {
     final data = ByteData.view(bytes.buffer);
 
     for (var i = 0; i < bytes.length; i += 2) {
-      int short = data.getInt16(i, Endian.host);
+      int short = data.getInt16(i, Endian.big);
       values.add(short);
     }
 
